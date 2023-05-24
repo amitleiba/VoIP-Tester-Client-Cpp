@@ -39,6 +39,8 @@ public:
 
     int getCallID();
 
+    void  getCallStatus();
+
 private:
     static constexpr auto SIP = "sip:";
     static constexpr auto SEPARATOR = "@";

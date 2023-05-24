@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    ui->auto_tests_loaderLabel->hide();
+
     connect(ui->connect_frame_connection_button, SIGNAL(clicked()), this, SLOT(connectButtonClicked()));
     connect(ui->auto_tests_button, SIGNAL(clicked()), this, SLOT(runAutoTestButtonClicked()));
     connect(ui->softphone_registration_button_1, SIGNAL(clicked()), this, SLOT(manualTestRegisterButtonClicked()));
@@ -76,7 +78,8 @@ void MainWindow::runAutoTestButtonClicked()
     std::cout << "runAutoTestButtonClicked" << std::endl;
 
     emit runAutoTestSignal(ui->auto_tests_pbx_ip_edit_text->toPlainText().toStdString(),
-                           ui->auto_tests_amout_edit_text->toPlainText().toInt());
+                           ui->auto_tests_amout_edit_text->toPlainText().toInt(),
+                           ui->auto_tests_duration_edit_text->toPlainText().toInt());
 }
 
 void MainWindow::manualTestRegisterButtonClicked()

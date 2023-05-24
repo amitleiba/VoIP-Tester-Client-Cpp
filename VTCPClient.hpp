@@ -54,6 +54,7 @@ public:
                                                boost::asio::placeholders::error));
         _thread = std::thread([this](){
             _context.run();
+            std::cout << "FINISHED IO-CONTEXT RUN" << std::endl;
         });
     }
 
@@ -66,7 +67,6 @@ public:
         }
         *_connected = true;
         _receiver.run();
-//        *_connected = true;
         Message message;
         message.push(static_cast<int>(VTCPOpcode::VTCP_CONNECT_REQ));
         send(message);
@@ -78,11 +78,8 @@ public:
             return;
         }
 
-        Message message;
-        message.push(static_cast<int>(VTCPOpcode::VTCP_DISCONNECT_REQ));
-        send(message);
-
         boost::system::error_code ec;
+        _receiver.stop();
         _socket->close(ec);
         if(ec)
         {

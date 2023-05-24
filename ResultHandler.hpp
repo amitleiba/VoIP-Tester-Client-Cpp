@@ -28,7 +28,9 @@ public:
         _handlers.emplace(VTCPOpcode::VTCP_DISCONNECT_RES, std::bind(&ResultHandler::onVtcpDisconnectResualt, this, std::placeholders::_1));
         _handlers.emplace(VTCPOpcode::VTCP_AUTO_TEST_RES, std::bind(&ResultHandler::onVtcpAutoTestResualt, this, std::placeholders::_1));
         _handlers.emplace(VTCPOpcode::VTCP_HISTORY_HEADER_RES, std::bind(&ResultHandler::onVtcpHistoryHeaderResualt, this, std::placeholders::_1));
-        _handlers.emplace(VTCPOpcode::VTCP_HISTORY_LOG_RES, std::bind(&ResultHandler::onVtcpHistoryLogResualtResualt, this, std::placeholders::_1));
+        _handlers.emplace(VTCPOpcode::VTCP_HISTORY_LOG_RES, std::bind(&ResultHandler::onVtcpHistoryLogResualt, this, std::placeholders::_1));
+        _handlers.emplace(VTCPOpcode::VTCP_AUTO_TEST_LOCK, std::bind(&ResultHandler::onVtcpAutoTestLock, this, std::placeholders::_1));
+        _handlers.emplace(VTCPOpcode::VTCP_AUTO_TEST_UNLOCK, std::bind(&ResultHandler::onVtcpAutoTestUnlock, this, std::placeholders::_1));
     }
 
     ~ResultHandler() = default;
@@ -83,11 +85,29 @@ private:
         }
     }
 
-    void onVtcpHistoryLogResualtResualt(const Message& result)
+    void onVtcpHistoryLogResualt(const Message& result)
     {
         auto data = result.readString();
         auto formattedData = formatJson(data);
         emit _mainWindow->openLogPopupWindowSignal(QString::fromStdString(formattedData));
+    }
+
+    void onVtcpAutoTestLock(const Message& result)
+    {
+        _mainWindow->ui->auto_tests_button->setEnabled(false);
+        _mainWindow->ui->auto_tests_amout_edit_text->setEnabled(false);
+        _mainWindow->ui->auto_tests_pbx_ip_edit_text->setEnabled(false);
+        _mainWindow->ui->auto_tests_duration_edit_text->setEnabled(false);
+        _mainWindow->ui->auto_tests_loaderLabel->show();
+    }
+
+    void onVtcpAutoTestUnlock(const Message& result)
+    {
+        _mainWindow->ui->auto_tests_button->setEnabled(true);
+        _mainWindow->ui->auto_tests_amout_edit_text->setEnabled(true);
+        _mainWindow->ui->auto_tests_pbx_ip_edit_text->setEnabled(true);
+        _mainWindow->ui->auto_tests_duration_edit_text->setEnabled(true);
+        _mainWindow->ui->auto_tests_loaderLabel->hide();
     }
 
     std::string formatJson(const std::string& data)

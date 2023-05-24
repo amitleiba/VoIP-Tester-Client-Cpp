@@ -1,14 +1,15 @@
 #ifndef MAINWINDOW_HPP
 #define MAINWINDOW_HPP
 
+#include <string>
+#include <array>
+
 #include <QMainWindow>
 #include <QListWidgetItem>
 #include <QTextBrowser>
 #include <QTime>
 #include <QTimer>
-
-#include <string>
-#include <array>
+#include <QMovie>
 
 #include "ui_MainWindow.h"
 //#include "IncomingCallDialog.hpp"
@@ -47,7 +48,7 @@ private slots:
 signals:
     void connectButtonClickedSignal(const std::string &, const std::string&);
     void disconnectButtonClickedSignal();
-    void runAutoTestSignal(const std::string& pbxIp, int amount);
+    void runAutoTestSignal(const std::string& pbxIp, int amount, int duration);
     void manualTestRegisterSignal(int index, int id, const std::string& pbxIp);
     void manualTestUnregisterSignal(int index);
     void manualTestCallSignal(int index, const std::string& dest);

@@ -30,6 +30,11 @@ public:
 
     ~Receiver() = default;
 
+    void stop()
+    {
+        *_active = false;
+    }
+
     void run()
     {
         read();
@@ -84,7 +89,14 @@ private:
 
     void onError(const boost::system::error_code &error)
     {
-        std::cout << "*** The following exception has been thrown " << error.message() << " ***" << std::endl;
+        if (error == boost::asio::error::eof)
+        {
+            std::cout << "Disconnected from the server" << std::endl;
+        }
+        else
+        {
+            std::cout << "*** The following exception has been thrown " << error.message() << " ***" << std::endl;
+        }
         _onDisconnect();
     }
 

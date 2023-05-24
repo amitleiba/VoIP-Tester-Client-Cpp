@@ -27,8 +27,7 @@ public:
     GuiHandler(QSharedPointer<MainWindow> mainWindow):
         _connected(std::make_shared<std::atomic<bool>>(false)),
         _mainWindow(mainWindow),
-        _client(_connected, std::bind(&GuiHandler::onMessageReceived, this, std::placeholders::_1)),
-        _resultHandler(_mainWindow, std::bind(&VTCPClient::send, &_client, std::placeholders::_1)),
+        _resultHandler(_mainWindow, std::bind(&GuiHandler::send, this, std::placeholders::_1)),
         _manualTestHandler(_mainWindow)
     {
         initSignals();
@@ -48,7 +47,7 @@ private:
     {
         std::cout << "init Buttons" << std::endl;
         QObject::connect(&(*_mainWindow), &MainWindow::connectButtonClickedSignal, this, &GuiHandler::onConnectButtonClicked);
-        QObject::connect(&(*_mainWindow), &MainWindow::disconnectButtonClickedSignal, this, &GuiHandler::onDisconnectButtonClicked);
+//        QObject::connect(&(*_mainWindow), &MainWindow::disconnectButtonClickedSignal, this, &GuiHandler::onDisconnectButtonClicked);
         QObject::connect(&(*_mainWindow), &MainWindow::runAutoTestSignal, this, &GuiHandler::onAutoTestButtonClicked);
         QObject::connect(&(*_mainWindow), &MainWindow::refreshHIstoryHeadersSignal, this, &GuiHandler::onRefreshHeadersButtonClicked);
         QObject::connect(&(*_mainWindow), &MainWindow::historyListItemClickedSignal, this, &GuiHandler::onItemClickedInHistoryList);
@@ -68,16 +67,17 @@ signals:
 public slots:
     void onConnectButtonClicked(const std::string& domain, const std::string& port)
     {
-        if(*_connected)
+        if(_client && *_connected)
         {
             std::cout << "onDisconnectButtonClicked " << std::endl;
 
-            _client.disconnect();
+            _client->disconnect();
             *_connected = false;
             _mainWindow->ui->connect_frame_ip_edit_text->setEnabled(true);
             _mainWindow->ui->connect_frame_port_edit_text->setEnabled(true);
             _mainWindow->ui->tabWidget->setEnabled(false);
             _mainWindow->ui->connect_frame_connection_button->setText("Connect");
+            delete _client;
         }
         else
         {
@@ -85,7 +85,9 @@ public slots:
 
             try
             {
-                _client.connect(domain, port);
+                _client = new VTCPClient
+                        (_connected, std::bind(&GuiHandler::onMessageReceived, this, std::placeholders::_1));
+                _client->connect(domain, port);
                 _mainWindow->ui->connect_frame_ip_edit_text->setEnabled(false);
                 _mainWindow->ui->connect_frame_port_edit_text->setEnabled(false);
                 _mainWindow->ui->tabWidget->setEnabled(true);
@@ -99,22 +101,22 @@ public slots:
         }
     }
 
-    void onDisconnectButtonClicked()
+//    void onDisconnectButtonClicked()
+//    {
+//        if(!*_connected)
+//            return;
+
+//        std::cout << "onDisconnectButtonClicked " << std::endl;
+
+//        _client.disconnect();
+//        *_connected = false;
+//        _mainWindow->ui->connect_frame_ip_edit_text->setEnabled(true);
+//        _mainWindow->ui->connect_frame_port_edit_text->setEnabled(true);
+//    }
+
+    void onAutoTestButtonClicked(const std::string& ip, int amount, int duration)
     {
-        if(!*_connected)
-            return;
-
-        std::cout << "onDisconnectButtonClicked " << std::endl;
-
-        _client.disconnect();
-        *_connected = false;
-        _mainWindow->ui->connect_frame_ip_edit_text->setEnabled(true);
-        _mainWindow->ui->connect_frame_port_edit_text->setEnabled(true);
-    }
-
-    void onAutoTestButtonClicked(const std::string& ip, int amount)
-    {
-        if(!*_connected)
+        if(!_client || !*_connected)
             return;
 
         std::cout << "onAutoTestButtonClicked " << std::endl;
@@ -123,15 +125,16 @@ public slots:
         message.push(static_cast<int>(VTCPOpcode::VTCP_AUTO_TEST_REQ));
         message.push(ip);
         message.push(amount);
-
-        _client.send(message);
+        message.push(duration);
+        send(message);
+        _mainWindow->ui->auto_tests_log_text_browser->clear();
     }
 
     void onManualTestRegisterButtonClicked(int softphoneIndex, int softphoneId, const std::string& pbxIP)
     {
         std::cout << "onManualTestRegisterButtonClicked " << softphoneIndex << ", " <<
                      softphoneId << ", " << pbxIP << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -147,7 +150,7 @@ public slots:
     void onManualTestUnregisterButtonClicked(int softphoneIndex)
     {
         std::cout << "onManualTestUnregisterButtonClicked " << softphoneIndex << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -161,7 +164,7 @@ public slots:
     void onManualTestCallButtonClicked(int softphoneIndex, const std::string& destUri)
     {
         std::cout << "onManualTestCallButtonClicked " << softphoneIndex << ", " << destUri << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -177,7 +180,7 @@ public slots:
 
     {
         std::cout << "onManualTestHangupButtonClicked " << softphoneIndex << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -191,7 +194,7 @@ public slots:
     void onManualTestAnswerButtonClicked(int softphoneIndex)
     {
         std::cout << "onManualTestAnswerButtonClicked " << softphoneIndex << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -205,7 +208,7 @@ public slots:
     void onManualTestDeclineButtonClicked(int softphoneIndex)
     {
         std::cout << "onManualTestAnswerButtonClicked " << softphoneIndex << std::endl;
-        if(!(*_connected)) {
+        if(!_client || !(*_connected)) {
             return;
         }
 
@@ -219,11 +222,11 @@ public slots:
     void onRefreshHeadersButtonClicked() {
         Message message;
         message.push(static_cast<int>(VTCPOpcode::VTCP_HISTORY_HEADER_REQ));
-        _client.send(message);
+        send(message);
     }
 
     void onItemClickedInHistoryList(const std::string& data) {
-        if(!(*(_connected)))
+        if(!_client || !(*(_connected)))
         {
             return;
         }
@@ -232,7 +235,7 @@ public slots:
         message.push(static_cast<int>(VTCPOpcode::VTCP_HISTORY_LOG_REQ));
         json json_list = json::parse(data);
         message.push(json_list["_id"].get<std::string>());
-        _client.send(message);
+        send(message);
     }
 
 
@@ -242,9 +245,15 @@ private:
         _resultHandler.handle(request);
     }
 
+    void send(const Message & message)
+    {
+        if(_client && _connected)
+            _client->send(message);
+    }
+
     std::shared_ptr<std::atomic<bool>> _connected;
     QSharedPointer<MainWindow> _mainWindow;
-    VTCPClient _client;
+    VTCPClient* _client;
     ResultHandler _resultHandler;
     ManualTestHandler _manualTestHandler;
 

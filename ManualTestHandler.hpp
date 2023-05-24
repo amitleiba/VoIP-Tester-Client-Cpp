@@ -24,8 +24,6 @@
 #include "VTCPManualStatus.hpp"
 #include "PjManager.hpp"
 #include "MainWindow.hpp"
-#include "InCallDialog.hpp"
-#include "IncomingCallDialog.hpp"
 
 class ManualTestHandler {
 public:
@@ -442,6 +440,7 @@ private:
     void onRegState(const pj::OnRegStateParam &prm, const pj::AccountInfo &ai, const int softphoneID)
     {
         int index = -1;
+
         for(int i=0; i < _manualTestSoftphones.size(); i++)
         {
             if(_manualTestSoftphones[i])
@@ -453,6 +452,7 @@ private:
                 }
             }
         }
+
         QTextBrowser* logTextBrowser;
         QLabel *uriLabel, *statusLabel;
         QTextEdit *ipTextEdit, *idTextEdit, *callUriTextEdit;
@@ -545,7 +545,7 @@ private:
 
         QTextBrowser *logTextBrowser;
         QTextEdit *callUriTextEdit;
-        QPushButton *declineButton,  *answerButton, *callButton;
+        QPushButton *declineButton, *answerButton, *callButton, *registrationButton;
 
         if(!(index >= 0 && index <= 2))
         {
@@ -564,6 +564,7 @@ private:
             declineButton = _mainWindow->ui->softphone_decline_button_1;
             answerButton = _mainWindow->ui->softphone_answer_button_1;
             callButton = _mainWindow->ui->softphone_call_button_1;
+            registrationButton = _mainWindow->ui->softphone_registration_button_1;
         }
         else if(index == 1)
         {
@@ -572,6 +573,7 @@ private:
             declineButton = _mainWindow->ui->softphone_decline_button_2;
             answerButton = _mainWindow->ui->softphone_answer_button_2;
             callButton = _mainWindow->ui->softphone_call_button_2;
+            registrationButton = _mainWindow->ui->softphone_registration_button_2;
         }
         else
         {
@@ -580,6 +582,7 @@ private:
             declineButton = _mainWindow->ui->softphone_decline_button_3;
             answerButton = _mainWindow->ui->softphone_answer_button_3;
             callButton = _mainWindow->ui->softphone_call_button_3;
+            registrationButton = _mainWindow->ui->softphone_registration_button_2;
         }
 
         std::cout << "*** Incoming Call: " <<  ci.remoteUri << " ["
@@ -602,6 +605,7 @@ private:
             callButton->setEnabled(false);
             declineButton->setEnabled(true);
             answerButton->setEnabled(true);
+            registrationButton->setEnabled(false);
 
             std::unique_lock<std::mutex> lock(_mutex);
             auto now = std::chrono::steady_clock::now();
@@ -611,6 +615,12 @@ private:
 
             if(statusFlag == std::cv_status::timeout || softphone->getDeclinedIncomingCall())
             {
+                callUriTextEdit->setEnabled(true);
+                callButton->setEnabled(true);
+                declineButton->setEnabled(false);
+                answerButton->setEnabled(false);
+                registrationButton->setEnabled(true);
+
                 pj::CallOpParam opcode;
                 opcode.statusCode = PJSIP_SC_DECLINE;
                 incomingCall->hangup(opcode);

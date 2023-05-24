@@ -37,20 +37,20 @@
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>30</y>
+        <y>10</y>
         <width>475</width>
         <height>33</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Please enter the required details below:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;Please enter the required details below:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QTextEdit" name="auto_tests_pbx_ip_edit_text">
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>100</y>
+        <y>65</y>
         <width>261</width>
         <height>31</height>
        </rect>
@@ -60,7 +60,7 @@
       <property name="geometry">
        <rect>
         <x>430</x>
-        <y>170</y>
+        <y>120</y>
         <width>261</width>
         <height>31</height>
        </rect>
@@ -70,7 +70,7 @@
       <property name="geometry">
        <rect>
         <x>760</x>
-        <y>140</y>
+        <y>125</y>
         <width>75</width>
         <height>23</height>
        </rect>
@@ -83,26 +83,26 @@
       <property name="geometry">
        <rect>
         <x>270</x>
-        <y>103</y>
+        <y>70</y>
         <width>61</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;PBX IP:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;PBX IP:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QLabel" name="auto_tests_amout_label">
       <property name="geometry">
        <rect>
         <x>270</x>
-        <y>175</y>
+        <y>125</y>
         <width>125</width>
-        <height>21</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Amount of calls:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Amount of calls:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QTextBrowser" name="auto_tests_log_text_browser">
@@ -172,6 +172,45 @@
         <string>NOTICE</string>
        </property>
       </item>
+     </widget>
+     <widget class="QLabel" name="auto_tests_loaderLabel">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>220</y>
+        <width>411</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>The server is in active auto test. Please wait for it to finish</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="auto_tests_duration_label">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>175</y>
+        <width>161</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Call duration (seconds):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="auto_tests_duration_edit_text">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>175</y>
+        <width>261</width>
+        <height>31</height>
+       </rect>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="Manual_Tests">
@@ -1147,14 +1186,14 @@ background-color: rgb(119, 118, 123);</string>
     <widget class="QLabel" name="connect_frame_text_label">
      <property name="geometry">
       <rect>
-       <x>13</x>
+       <x>10</x>
        <y>80</y>
-       <width>231</width>
+       <width>221</width>
        <height>121</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;Please enter the IP and&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;the Port of the VoIP-Tester&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;server in order to use &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:10pt; font-weight:600;&quot;&gt;the controller&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Please enter the IP and&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;the Port of the VoIP-Tester&lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;server in order to use &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;the controller&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
     <widget class="QLabel" name="connect_frame_ip_label">
